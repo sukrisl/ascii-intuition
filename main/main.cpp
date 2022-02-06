@@ -3,14 +3,17 @@
 #include "freertos/task.h"
 
 void charToBinary(bool(&dest)[8], char c) {
+    printf("'%c'\n", c);
     for (uint8_t i = 0; i < 8; i++) {
         dest[i] = static_cast<uint8_t>(c) & (0b10000000 >> i);
     }
+}
 
-    printf("%c,0x%02x,%u%u%u%u%u%u%u%u\n",
-        c, static_cast<uint8_t>(c),
-        dest[0], dest[1], dest[2], dest[3], dest[4], dest[5], dest[6], dest[7]
-    );
+void printCharBinaryMSB(bool bins[8]) {
+    for (uint8_t i = 0; i < 8; i++) {
+        printf("%u\n", bins[i]);
+        vTaskDelay(10 / portTICK_PERIOD_MS);
+    }
 }
 
 void strReadTask(void* pvParam) {
@@ -33,6 +36,7 @@ Scratch bawl under human beds.
         for (uint64_t i = 0; inputStr[i] != '\0'; i++) {
             bool binaryResult[8];
             charToBinary(binaryResult, inputStr[i]);
+            printCharBinaryMSB(binaryResult);
             vTaskDelay(500 / portTICK_PERIOD_MS);
         }
 
